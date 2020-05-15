@@ -95,6 +95,14 @@ const styles = StyleSheet.create({
     resizeMode: 'cover', // or 'stretch'
     opacity: 80,
   },
+  item: {
+    marginTop: 10,
+    padding: 10,
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,.7)',
+    fontSize: 24,
+    flexDirection: 'column',
+  },
 
   registrationDetails: {
     width: '80%',
@@ -135,6 +143,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'rgba(69,145,130,10)',
+    padding: 10,
   },
   search_date_time_button: {
     width: '50%',

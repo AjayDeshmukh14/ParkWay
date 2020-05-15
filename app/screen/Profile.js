@@ -10,15 +10,14 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import PropTypes from 'prop-types';
-import call from 'react-native-phone-call'
+import call from 'react-native-phone-call';
 
 class Profile extends Component {
-
   render() {
     const args = {
-      number: '+15108722323', // String value with the number to call
-      prompt: true // Optional boolean property. Determines if the user should be prompt prior to the call 
-    }
+      number: '+14086462243', // String value with the number to call
+      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
+    };
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -47,7 +46,10 @@ class Profile extends Component {
               />
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.info}>Personal Details</Text>
+              <Text 
+              style={styles.info}
+              onPress={() => this.props.navigation.navigate('personaldetails')}
+              >Personal Details</Text>
             </View>
           </View>
 
@@ -71,7 +73,11 @@ class Profile extends Component {
               />
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.info} onPress={ ()=> this.props.navigation.navigate('activities')}>Activities</Text>
+              <Text
+                style={styles.info}
+                onPress={() => this.props.navigation.navigate('activities')}>
+                Activities
+              </Text>
             </View>
           </View>
 
@@ -95,8 +101,13 @@ class Profile extends Component {
               />
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.info} onPress={() => {call(args).catch(console.error);
-                  }}>Contact Support</Text>
+              <Text
+                style={styles.info}
+                onPress={() => {
+                  call(args).catch(console.error);
+                }}>
+                Contact Support
+              </Text>
             </View>
           </View>
         </View>

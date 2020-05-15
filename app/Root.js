@@ -15,14 +15,15 @@ import HostMain from './screen/HostMain';
 import SpotDetails from './screen/SpotDetails';
 import Profile from './screen/Profile';
 import Registration from './screen/Registration';
-import Login from './screen/Login';
+import NewLogin from './screen/NewLogin';
 import Search from './screen/Search';
 import Booking from './screen/Booking';
 import Welcome from './screen/WelcomePage';
 import PrePaymentPage from './screen/PrePaymentPage';
 import Payment from './screen/Payment';
 import Activities from './screen/Activities';
-import ActivityDetails from './screen/ActivityDetails'
+import ActivityDetails from './screen/ActivityDetails';
+import Personaldetails from './screen/Personaldetails';
 
 /* const bottomTab2 = createMaterialBottomTabNavigator(
   {
@@ -86,7 +87,7 @@ const stack = createStackNavigator(
   {
     welcome: {screen: Welcome},
     registration: {screen: Registration},
-    login: {screen: Login},
+    login: {screen: NewLogin},
     search: {screen: Search},
     booking: {screen: Booking},
     prepayment: {screen: PrePaymentPage},
@@ -95,7 +96,8 @@ const stack = createStackNavigator(
     hostDetails: {screen: HostDetails},
     tabScreen: {screen: TabNavigator},
     activities: {screen: Activities},
-    activitydetails: {screen: ActivityDetails}
+    activitydetails: {screen: ActivityDetails},
+    personaldetails: {screen: Personaldetails},
   },
   {
     initialRouteName: 'welcome',

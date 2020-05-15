@@ -26,7 +26,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import CustomButton from '../components/Button';
 //import CustomTextInput from '../components/TextInput';
-import call from 'react-native-phone-call'
+import call from 'react-native-phone-call';
 
 class PrePaymentPage extends React.Component {
   constructor(props) {
@@ -54,14 +54,12 @@ class PrePaymentPage extends React.Component {
       });
   }
 
-
-
   render() {
     const {data, isLoading} = this.state;
     const args = {
-      number: '+15108722323', // String value with the number to call
-      prompt: true // Optional boolean property. Determines if the user should be prompt prior to the call 
-    }
+      number: '+14086462243', // String value with the number to call
+      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
+    };
 
     return (
       <View style={[styles.registrationDetails, {flexDirection: 'column'}]}>
@@ -85,7 +83,8 @@ class PrePaymentPage extends React.Component {
                 <Text style={styles.item}>Address:{item.address} </Text>
                 <CustomButton
                   title="Contact Support"
-                  functionOnClick={() => {call(args).catch(console.error);
+                  functionOnClick={() => {
+                    call(args).catch(console.error);
                     //this.props.navigation.navigate('tabScreen');
                   }}
                 />

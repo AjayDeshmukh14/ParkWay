@@ -27,18 +27,12 @@ import CustomButton from '../components/Button';
 import Toast from 'react-native-simple-toast';
 //import CustomTextInput from '../components/TextInput';
 
-class Registration extends React.Component {
+class NewLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstname: '',
-      lastname: '',
-      emailid: '',
-      mobile: '',
-      dob: '',
       username: '',
       password: '',
-      usertype: 'G',
       showDisplay: false,
       count: 0,
       color: 'red',
@@ -49,7 +43,7 @@ class Registration extends React.Component {
   postData = () => {
     try {
       fetch(
-        'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/register',
+        'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/login',
         {
           //fetch('http://10.0.0.153:5000/login', {
           method: 'POST',
@@ -59,30 +53,52 @@ class Registration extends React.Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            firstname: this.state.firstname,
-            lastname: this.state.lastname,
-            emailid: this.state.emailid,
-            mobile: this.state.mobile,
-            dob: this.state.dob,
             username: this.state.username,
             password: this.state.password,
-            usertype: this.state.usertype,
           }),
         },
-      ).then(response => {
-        const statusCode = response.status;
+      )
+        .then(response => {
+          const statusCode = response.status;
+          const promiseofdata = response.json();
+          return Promise.all([statusCode, promiseofdata]);
+        })
+        .then(res => {
+          console.log('response', res);
+          const statusCode = res[0];
+          const data = res[1];
+          console.log(data);
+          /* {
+        statusCode: res[0],
+        data: res[1],
+      } */
+          if (statusCode === 500) {
+            Toast.show('Something went wrong we are looking into it!');
+          } else if (statusCode === 200) {
+            Toast.show('Lets find a parking space for you!');
+            this.props.navigation.navigate('tabScreen');
+          } else if (statusCode === 400) {
+            Toast.show('Invalid user credentials');
+          } else {
+            Toast.show('Something went terribly wrong.....we are on it!');
+          }
+        })
+        /* res => {
+          statusCode: res[0];
+          data: res[1];
 
-        if (statusCode === 500) {
-          Toast.show('Something went wrong we are looking into it!');
-        } else if (statusCode === 200) {
-          Toast.show('Registered Successfully');
-          this.props.navigation.navigate('tabScreen');
-        } else if (statusCode === 400) {
-          Toast.show('Invalid user credentials');
-        } else {
-          Toast.show('Something went terribly wrong.....we are on it!');
-        }
-      });
+          if (statusCode === 500) {
+            Toast.show('Something went wrong we are looking into it!');
+          } else if (data === 'success') {
+            this.props.navigation.navigate('tabScreen');
+          } else {
+            Toast.show('Something went wrong we are looking into it!');
+          }
+        } */
+        .catch(error => {
+          console.error(error);
+          return {name: 'network error', description: ''};
+        });
     } catch (e) {
       console.log(e);
     }
@@ -97,71 +113,26 @@ class Registration extends React.Component {
           <Text style={styles.welcome}>ParkWay</Text>
 
           <TextInput
-            placeholder="First name"
-            style={styles.input}
-            value={this.state.firstname}
-            onChangeText={text => {
-              this.setState({firstname: text});
-            }}
-          />
-
-          <TextInput
-            placeholder="Last name"
-            style={styles.input}
-            value={this.state.lastname}
-            onChangeText={text => {
-              this.setState({lastname: text});
-            }}
-          />
-
-          <TextInput
-            placeholder="Username"
+            placeholder="Email or Username"
             style={styles.input}
             value={this.state.username}
-            onChangeText={text => {
-              this.setState({username: text});
+            onChangeText={changedText => {
+              this.setState({username: changedText});
             }}
           />
 
           <TextInput
-            placeholder="Email"
+            placeholder="Password"
             style={styles.input}
-            value={this.state.emailid}
-            onChangeText={text => {
-              this.setState({emailid: text});
-            }}
-          />
-
-          <TextInput
-            placeholder="Mobile Number"
-            style={styles.input}
-            value={this.state.mobile}
-            onChangeText={text => {
-              this.setState({mobile: text});
-            }}
-          />
-
-          <TextInput
-            placeholder="Date of Birth (yyyy-mm-dd)"
-            style={styles.input}
-            value={this.state.dob}
-            onChangeText={text => {
-              this.setState({dob: text});
-            }}
-          />
-
-          <TextInput
-            secureTextEntry={true}
-            style={styles.input}
-            placeholder="Enter Password"
             value={this.state.password}
-            onChangeText={text => {
-              this.setState({password: text});
+            secureTextEntry={true}
+            onChangeText={changedText => {
+              this.setState({password: changedText});
             }}
           />
 
           <CustomButton
-            title="Sign Up"
+            title="Login"
             functionOnClick={() => {
               //this.props.navigation.navigate('search');
               //this.props.navigation.navigate('tabScreen');
@@ -286,4 +257,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Registration;
+export default NewLogin;

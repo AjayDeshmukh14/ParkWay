@@ -9,13 +9,35 @@ import {
   ImageBackground,
 } from 'react-native';
 import Loginform from './Loginform';
-
+import Toast from 'react-native-simple-toast';
 class Login extends Component {
-  async componentDidMount() {
-    alert('HI KSHITU PITU');
+  /* async componentDidMount() {
     try {
-      //fetch('https://webhook.site/33214564-f9bc-4a3c-b479-ca8ecf6ea2b5', {
-      fetch('some.link.here', {
+      fetch(
+        'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/login',
+        {
+          //fetch('http://10.0.0.153:5000/login', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: 'ksh',
+            password: 'huha',
+          }),
+        },
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  } */
+
+  async componentDidMount() {
+    try {
+      fetch('https://webhook.site/33214564-f9bc-4a3c-b479-ca8ecf6ea2b5', {
+        //fetch('http://10.0.0.153:5000/login', {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -23,14 +45,34 @@ class Login extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: 'eve.holt@reqres.in',
-          password: 'cityslicka',
+          username: 'ksh',
+          password: 'huha',
         }),
-      });
+      })
+        .then(response => {
+          const statusCode = response.status;
+          /* if (statusCode === 200) {
+            Toast.show('Yayy');
+          } else {
+            Toast.show('Nayy :(');
+          } */
+          const promiseofdata = response.json();
+          return Promise.all([statusCode, promiseofdata]);
+          //return response.json();
+        })
+        .then(res => ({
+          statusCode: res[0],
+          data: res[1],
+        }))
+        .catch(error => {
+          console.error(error);
+          return {name: 'network error', description: ''};
+        });
     } catch (e) {
       console.log(e);
     }
   }
+
   render() {
     return (
       <ImageBackground

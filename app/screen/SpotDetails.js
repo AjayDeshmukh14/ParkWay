@@ -33,8 +33,55 @@ class SpotDetails extends React.Component {
       count: 0,
       color: 'red',
       value: 'Enter required Data',
+      hid: '',
+      pcity: '',
+      sAddress: '',
+      pstate: '',
+      pcountry: '',
+      pzcode: '',
     };
   }
+
+
+postData = () => {
+    try {
+      fetch(
+        'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/host_spot',
+        {
+          //fetch('http://10.0.0.153:5000/login', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            hid: this.state.hid,
+            pcity: this.state.pcity,
+            sAddress: this.state.sAddress,
+            pstate: this.state.pstate,
+            pcountry: this.state.pcountry,
+            pzcode: this.state.pzcode,
+          }),
+        },
+      ).then(response => {
+        const statusCode = response.status;
+
+        if (statusCode === 500) {
+          Toast.show('Something went wrong we are looking into it!');
+        } else if (statusCode === 200) {
+          Toast.show('Your parking spot registered Successfully');
+          this.props.navigation.navigate('tabScreen');
+        } else if (statusCode === 400) {
+          Toast.show('Invalid user credentials');
+        } else {
+          Toast.show('Something went terribly wrong.....we are on it!');
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   render() {
     return (
@@ -46,27 +93,58 @@ class SpotDetails extends React.Component {
             Earn some money by hosting your spare parking
           </Text>
 
-          <TextInput placeholder="SpotName" style={styles.input} />
+          <TextInput placeholder="SpotName" style={styles.input} 
+          value={this.state.hid}
+            onChangeText={text => {
+              this.setState({hid: text});
+            }}
+            />
 
           <TextInput placeholder="Fee per hour" style={styles.input} />
 
           <TextInput
             placeholder="Directions to reach this spot"
             style={styles.input}
+            value={this.state.sAddress}
+            onChangeText={text => {
+              this.setState({sAddress: text});
+            }}
           />
 
-          <TextInput placeholder="City" style={styles.input} />
+          <TextInput placeholder="City" style={styles.input} 
+            value={this.state.pcity}
+            onChangeText={text => {
+              this.setState({pcity: text});
+            }}
+            />
 
-          <TextInput placeholder="State" style={styles.input} />
 
-          <TextInput placeholder="Country" style={styles.input} />
+          <TextInput placeholder="State" style={styles.input} 
+            value={this.state.pstate}
+            onChangeText={text => {
+              this.setState({pstate: text});
+            }}
+            />
 
-          <TextInput placeholder="Pincode" style={styles.input} />
+          <TextInput placeholder="Country" style={styles.input} 
+            value={this.state.pcountry}
+            onChangeText={text => {
+              this.setState({pcountry: text});
+            }}
+            />
+
+          <TextInput placeholder="Pincode" style={styles.input} 
+            value={this.state.pzcode}
+            onChangeText={text => {
+              this.setState({pzcode: text});
+            }}
+            />
 
           <CustomButton
-            title="Next"
+            title="Register Parking spot"
             functionOnClick={() => {
-              this.props.navigation.navigate('hostDetails');
+              this.postData();
+              //this.props.navigation.navigate('hostDetails');
               //this.props.navigation.navigate('tabScreen');
             }}
           />

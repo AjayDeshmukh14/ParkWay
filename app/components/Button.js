@@ -18,9 +18,9 @@ class CustomButton extends React.Component {
         style={{
           backgroundColor: 'white',
           color: 'blue',
-          //height: 30,
+          height: 30,
           width: 'auto',
-          padding: 20,
+          padding: 30,
           alignItems: 'center',
           backgroundColor: '#DDDDDD',
         }}>

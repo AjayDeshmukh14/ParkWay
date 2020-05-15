@@ -23,6 +23,7 @@ class Host extends React.Component {
     //console.log(username,password)
     console.log(this.state.username, this.state.password);
   }
+
   render() {
     return (
       <ImageBackground

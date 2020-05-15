@@ -39,29 +39,29 @@ export default class Activities extends Component {
     const {data, isLoading} = this.state;
 
     return (
-        <View style={[styles.registrationDetails, {flexDirection: 'column'}]}>
-          {isLoading ? (
-            <ActivityIndicator />
-          ) : (
-            <FlatList
-              data={data}
-              keyExtractor={({id}, index) => id}
-              renderItem={({item}) => (
-                <View style={styles.item}>
-                  <Text style={styles.item}>Acitivity Name: </Text>
-                  <Text style={styles.item}>Date </Text>
-                  <CustomButton
-                    title="View Details"
-                    functionOnClick={() => {
-                      this.props.navigation.navigate('activitydetails');
-                      //this.props.navigation.navigate('tabScreen');
-                    }}
-                  />
-                </View>
-              )}
-            />
-          )}
-        </View>
+      <View style={[styles.registrationDetails, {flexDirection: 'column'}]}>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            data={data}
+            keyExtractor={({id}, index) => id}
+            renderItem={({item}) => (
+              <View style={styles.item}>
+                <Text style={styles.item}>Acitivity Name: </Text>
+                <Text style={styles.item}>Date </Text>
+                <CustomButton
+                  title="View Details"
+                  functionOnClick={() => {
+                    this.props.navigation.navigate('activitydetails');
+                    //this.props.navigation.navigate('tabScreen');
+                  }}
+                />
+              </View>
+            )}
+          />
+        )}
+      </View>
     );
   }
 }
