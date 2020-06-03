@@ -76,7 +76,23 @@ class Profile extends Component {
               <Text
                 style={styles.info}
                 onPress={() => this.props.navigation.navigate('activities')}>
-                Activities
+                Guest Activities
+              </Text>
+            </View>
+          </View>
+          
+          <View style={styles.item}>
+            <View style={styles.iconContent}>
+              <Image
+                style={styles.icon}
+                source={require('../assets/fav.png')}
+              />
+          </View>
+          <View style={styles.infoContent}>
+              <Text
+                style={styles.info}
+                onPress={() => this.props.navigation.navigate('hostactivities')}>
+                Host Activities
               </Text>
             </View>
           </View>

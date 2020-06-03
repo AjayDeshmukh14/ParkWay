@@ -26,19 +26,19 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import CustomButton from '../components/Button';
 //import CustomTextInput from '../components/TextInput';
+import call from 'react-native-phone-call';
 
 class PrePaymentPage extends React.Component {
   constructor(props) {
     super(props);
-    const params = this.props.navigation.state.params;
 
     this.state = {
-      responsedata: params.data,
+      data: [],
       isLoading: true,
     };
   }
 
-  /* componentDidMount() {
+  componentDidMount() {
     fetch(
       'https://5e991ed75eabe7001681c770.mockapi.io/search_spot/spotId/calculatePrice',
     )
@@ -52,32 +52,46 @@ class PrePaymentPage extends React.Component {
       .finally(() => {
         this.setState({isLoading: false});
       });
-  } */
+  }
 
   render() {
-    const {responsedata, data, isLoading} = this.state;
-
-    console.log('Actual Response from api: ', responsedata);
-
-    if (!responsedata) {
-      return <Text>Loading</Text>;
-    }
-
-    //const results = JSON.parse(responsedata.result);
+    const {data, isLoading} = this.state;
+    const args = {
+      number: '+14086462243', // String value with the number to call
+      prompt: true, // Optional boolean property. Determines if the user should be prompt prior to the call
+    };
 
     return (
-      <View style={styles.registrationDetails}>
-        <Text style={styles.item}>SpotName:{responsedata.spotName} </Text>
-        <Text style={styles.item}>
-          ParkingFeePerHour:{responsedata.ParkingFeePerHour}{' '}
-        </Text>
-        <Text style={styles.item}>SPotAddress:{responsedata.SPotAddress} </Text>
-        <CustomButton
-          title="Reserve Now"
-          functionOnClick={() => {
-            this.props.navigation.navigate('payment');
-          }}
-        />
+      <View style={[styles.registrationDetails, {flexDirection: 'column'}]}>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            data={data}
+            keyExtractor={({id}, index) => id}
+            renderItem={({item}) => (
+              <View style={styles.item}>
+                <Text style={styles.appText}>Hosted Spot Details</Text>
+                <Text style={styles.item}>Start Date: </Text>
+                <Text style={styles.item}>Start Time: </Text>
+                <Text style={styles.item}>End Date: </Text>
+                <Text style={styles.item}>End Time: </Text>
+                <Text style={styles.item}>Spot Name: </Text>
+                <Text style={styles.item}>
+                  Total Price:{item.calculatedPrice}{' '}
+                </Text>
+                <Text style={styles.item}>Address:{item.address} </Text>
+                <CustomButton
+                  title="Contact Support"
+                  functionOnClick={() => {
+                    call(args).catch(console.error);
+                    //this.props.navigation.navigate('tabScreen');
+                  }}
+                />
+              </View>
+            )}
+          />
+        )}
       </View>
     );
   }
@@ -89,19 +103,8 @@ const styles = StyleSheet.create({
     resizeMode: 'cover', // or 'stretch'
     opacity: 80,
   },
-  item: {
-    marginTop: 10,
-    padding: 10,
-    flex: 1,
-    backgroundColor: 'rgba(255,255,255,.7)',
-    fontSize: 24,
-    flexDirection: 'column',
-  },
 
   registrationDetails: {
-    width: '80%',
-    height: '80%',
-    backgroundColor: 'rgba(255,255,255,.7)',
     alignSelf: 'center',
     justifyContent: 'center',
     padding: 20,
@@ -137,7 +140,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'rgba(69,145,130,10)',
-    padding: 10,
   },
   search_date_time_button: {
     width: '50%',
@@ -174,6 +176,15 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  buttonContainer: {
+    backgroundColor: '#8cc2c2',
+    paddingVertical: 10,
+  },
+
+  buttonText: {
+    textAlign: 'center',
+    color: '#FFF',
   },
 });
 

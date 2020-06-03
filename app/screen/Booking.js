@@ -14,14 +14,20 @@ import {Button} from 'react-native-paper';
 export default class Booking extends Component {
   constructor(props) {
     super(props);
+    //here I am getting response data of search api in params
+    //const {params} = this.props.navigation.state;
+    const params = this.props.navigation.state.params;
 
     this.state = {
-      data: [],
-      isLoading: true,
+      responsedata: params.data,
+      isLoading: false,
+      spotName: '',
+      ParkingFeePerHour: '',
+      SPotAddress: '',
     };
   }
 
-  componentDidMount() {
+  /* componentDidMount() {
     fetch('https://5e991ed75eabe7001681c770.mockapi.io/spotSearch')
       .then(response => response.json())
       .then(Responsejson => {
@@ -33,10 +39,86 @@ export default class Booking extends Component {
       .finally(() => {
         this.setState({isLoading: false});
       });
-  }
+  } */
+
+  /* window.onload = function() {
+    $.getJSON( "main.json", function(json) {
+        // process the results here
+    });
+} */
+
+  /* componentDidMount() {
+    const {responsedata, isLoading} = this.state;
+    const results = JSON.parse(responsedata.results);
+  } */
+
+  postData = () => {
+    /*  if (
+      this.state.spotName == '' ||
+      this.state.ParkingFeePerHour == '' ||
+      this.state.SPotAddress == ''
+    ) {
+      alert('Data is not set');
+      return;
+    } */
+    /* this.setState({spotName: item.spotName});
+    this.setState({ParkingFeePerHour: item.ParkingFeePerHour});
+    this.setState({SPotAddress: item.SPotAddress}); */
+
+    console.log('Booking SPotAddress', this.state.SPotAddress);
+    console.log('Booking ParkingFeePerHour', this.state.ParkingFeePerHour);
+    console.log('Booking spotName', this.state.spotName);
+
+    try {
+      fetch(
+        'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/booking',
+        {
+          //fetch('http://10.0.0.153:5000/login', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            spotName: this.state.spotName,
+            ParkingFeePerHour: this.state.ParkingFeePerHour,
+            SPotAddress: this.state.SPotAddress,
+          }),
+        },
+      )
+        .then(response => {
+          const statusCode = response.status;
+          const promiseofdata = response.json();
+          return Promise.all([statusCode, promiseofdata]);
+          /* if (statusCode === 500) {
+          Toast.show('Something went wrong we are looking into it!');
+        } else if (statusCode === 200) {
+          Toast.show('Registered Successfully');
+          this.props.navigation.navigate('tabScreen');
+        } else if (statusCode === 400) {
+          Toast.show('Invalid user credentials');
+        } else {
+          Toast.show('Something went terribly wrong.....we are on it!');
+        } */
+        })
+        .then(res => {
+          const responseCode = res[0];
+          const data = res[1];
+          console.log('data on booking page after hitting api: ', data);
+
+          if (responseCode == 200) {
+            this.props.navigation.navigate('prepayment', {data});
+          }
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   render() {
-    const {data, isLoading} = this.state;
+    const {responsedata, isLoading} = this.state;
+    const results = JSON.parse(responsedata.result || null);
 
     return (
       <ImageBackground
@@ -47,18 +129,46 @@ export default class Booking extends Component {
             <ActivityIndicator />
           ) : (
             <FlatList
-              data={data}
+              data={results}
               keyExtractor={({id}, index) => id}
               renderItem={({item}) => (
                 <View style={styles.item}>
                   <Text style={styles.item}>Spot Name:{item.spotName} </Text>
-                  <Text style={styles.item}>Spot Price:{item.price} </Text>
-                  <Text style={styles.item}>Address:{item.address} </Text>
+
+                  <Text style={styles.item}>
+                    Spot Price: ${item.ParkingFeePerHour}{' '}
+                  </Text>
+                  <Text style={styles.item}>Address:{item.SPotAddress} </Text>
+
+                  {/* <Button
+                    onPress={() => {
+                      this.setState({spotName: item.spotName});
+                      this.setState({
+                        ParkingFeePerHour: item.ParkingFeePerHour,
+                      });
+                      this.setState({SPotAddress: item.SPotAddress});
+                      this.postData();
+                    }}
+                    title="Book Now"
+                  /> */}
                   <CustomButton
                     title="Book Now"
                     functionOnClick={() => {
-                      this.props.navigation.navigate('prepayment');
-                      //this.props.navigation.navigate('tabScreen');
+                      this.setState(
+                        {
+                          spotName: item.spotName,
+                          ParkingFeePerHour: item.ParkingFeePerHour,
+                          SPotAddress: item.SPotAddress,
+                        },
+                        () => {
+                          this.postData({item});
+                        },
+                      );
+                      /* this.setState({
+                        ParkingFeePerHour: item.ParkingFeePerHour,
+                      });
+                      this.setState({SPotAddress: item.SPotAddress});
+                      this.postData({item}); */
                     }}
                   />
                 </View>

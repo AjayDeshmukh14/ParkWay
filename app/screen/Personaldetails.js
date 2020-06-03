@@ -1,66 +1,103 @@
 import React from 'react';
-import { Text, View, StyleSheet, ImageBackground, Button } from 'react-native';
+import {Text, View, StyleSheet, ImageBackground, Button} from 'react-native';
 
-export default class Personaldetails extends React.Component 
-{
-  render() 
-  {
-    return (
-      <ImageBackground
-        source={require('../assets/parkwayRegistration.jpg')}
-        style={styles.backgroundImage}>
-      <View style={styles.registrationDetails}>
+class Personaldetails extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      responsedata: '',
+      isLoading: false,
+      firstName: '',
+    };
+  }
+  // componentDidMount(){
+  //   this.getapidata()
+  // }
+  // async getapidata(){
+  //   let resp=await Axios.get('http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/profile_details/userID')
+  // console.warn(resp.data)
+  // }
 
-      <Text style={styles.welcome}>Personal Details</Text>
-      <Text style={styles.sectionTitle}>Name</Text>
-      <Text style={styles.amount}>Bhagyashri Badgujar</Text>
-      <Text style={styles.sectionTitle}>Mobile Number</Text>
-      <Text style={styles.amount}>6692747317</Text>
-      <Text style={styles.sectionTitle}>Address</Text>
-      <Text style={styles.amount}>1050 Benton Street</Text>
-      <Text style={styles.sectionTitle}>Date of Birth</Text>
-      <Text style={styles.amount}>05/19/1995</Text>
-      {/* <Button title="EDIT" onPress={this.handlePress} /> */}
-      
-      
-      </View>
-      </ImageBackground>
+  componentDidMount() {
+    fetch(
+      'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/profile_details/11',
+    )
+      .then(response => response.json())
+      .then(Responsejson => {
+        this.setState({responsedata: Responsejson});
+      })
+      .catch(error => console.error(error))
+      .finally(() => {
+        this.setState({isLoading: false});
+      });
+  }
+
+  renderCheck() {
+    return this.state.responsedata.map(data => {
+      return (
+        <View>
+          <Text> {data.Name}</Text>
+        </View>
       );
+    });
+  }
+
+  /* async componentDidMount() {
+    // GET request using fetch with async/await
+    fetch(
+      'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/profile_details/11',
+    )
+      .then(response => response.json())
+      .then(Responsejson => {
+        this.setState({
+          data: Responsejson,
+        });
+      });
+  } */
+
+  render() {
+    const {responsedata, isLoading} = this.state;
+
+    if (!responsedata) {
+      return <Text>Loading</Text>;
+    }
+
+    const results = JSON.parse(responsedata.result);
+
+    console.log('Actual Response from api: ', results);
+
+    /* var {responsedata = []} = this.state;
+    var {isLoading} = this.state; */
+    //console.log('Result of api: ', responsedata);
+
+    //result = JSON.parse(responsedata.result);
+
+    //console.log('this ', results[0]);
+
+    //const results = JSON.parse([responsedata]);
+
+    return (
+      <View style={styles.registrationDetails}>
+        <Text style={styles.item}>Name:{results[0].Name} </Text>
+        <Text style={styles.item}>EmailID:{results[0].EmailID} </Text>
+        <Text style={styles.item}>Username:{results[0].Username} </Text>
+      </View>
+    );
   }
 }
+
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 40,
-    color: 'black',
-    fontWeight:'bold'
-  },
-  welcome: {
-    fontSize: 35,
-    textAlign: 'left',
-    margin: 10,
-    fontWeight:'bold',
-    color: 'rgba(69,145,130,10)',
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    textAlign: 'left',
-    margin: 10,
-    color: 'rgba(69,145,130,10)',
-    marginBottom:-10,
-    marginTop:10,
-  },
-  amount: {
-    fontSize: 27,
-    fontWeight: '800',
-    textAlign: 'left',
-    margin: 10,
-    color: 'black',
-  },
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover', // or 'stretch'
-    opacity:400,
+    opacity: 80,
+  },
+  item: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'rgba(255,255,255,.7)',
+    fontSize: 24,
+    flexDirection: 'column',
   },
   registrationDetails: {
     width: '100%',
@@ -71,3 +108,5 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 });
+
+export default Personaldetails;

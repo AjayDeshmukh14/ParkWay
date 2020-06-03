@@ -47,14 +47,13 @@ export default class Activities extends Component {
             data={data}
             keyExtractor={({id}, index) => id}
             renderItem={({item}) => (
-              
               <View style={styles.item}>
                 <Text style={styles.item}>Spot Name: </Text>
                 <Text style={styles.item}>Date </Text>
                 <CustomButton
                   title="View Details"
                   functionOnClick={() => {
-                    this.props.navigation.navigate('activitydetails');
+                    this.props.navigation.navigate('hactivitydetails');
                     //this.props.navigation.navigate('tabScreen');
                   }}
                 />

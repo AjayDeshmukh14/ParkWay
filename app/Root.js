@@ -24,6 +24,9 @@ import Payment from './screen/Payment';
 import Activities from './screen/Activities';
 import ActivityDetails from './screen/ActivityDetails';
 import Personaldetails from './screen/Personaldetails';
+import SubSpotDetails from './screen/SubSpotDetails';
+import HostActivities from './screen/HostActivities'
+import HActivityDetails from './screen/HActivityDetails'
 
 /* const bottomTab2 = createMaterialBottomTabNavigator(
   {
@@ -98,6 +101,9 @@ const stack = createStackNavigator(
     activities: {screen: Activities},
     activitydetails: {screen: ActivityDetails},
     personaldetails: {screen: Personaldetails},
+    subspotdetails: {screen: SubSpotDetails},
+    hostactivities: {screen: HostActivities},
+    hactivitydetails: {screen: HActivityDetails},
   },
   {
     initialRouteName: 'welcome',

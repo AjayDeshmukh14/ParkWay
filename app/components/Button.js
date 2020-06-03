@@ -23,8 +23,11 @@ class CustomButton extends React.Component {
           padding: 30,
           alignItems: 'center',
           backgroundColor: '#DDDDDD',
+          marginLeft: 5,
+          marginRight: 5,
+          justifyContent: 'center',
         }}>
-        <Text>{this.props.title}</Text>
+        <Text style={{textAlign: 'center',}}>{this.props.title}</Text>
       </TouchableOpacity>
     );
   }

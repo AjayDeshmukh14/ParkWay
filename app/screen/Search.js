@@ -17,6 +17,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import CustomButton from '../components/Button';
 
 import {createAppContainer, createStackNavigator} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -34,6 +35,10 @@ class Search extends React.Component {
       isVisibleCheckOut: false,
       chosenCheckOutDateTime: '',
       whichPicker: '',
+      P_Zipcode: '',
+      P_City: '',
+      AvailStartDateTime: '',
+      AvailEndDateTime: '',
     };
   }
 
@@ -42,12 +47,12 @@ class Search extends React.Component {
     if (whichPicker == 'checkin') {
       this.setState({
         isVisible: false,
-        chosenCheckInDateTime: moment(datetime).format('MMMM, Do YYYY HH:mm '),
+        AvailStartDateTime: moment(datetime).format('MMMM, Do YYYY HH:mm '),
       });
     } else {
       this.setState({
         isVisible: false,
-        chosenCheckOutDateTime: moment(datetime).format('MMMM, Do YYYY HH:mm '),
+        AvailEndDateTime: moment(datetime).format('MMMM, Do YYYY HH:mm '),
       });
     }
   };
@@ -65,61 +70,113 @@ class Search extends React.Component {
     });
   };
 
+  postData = () => {
+    if (
+      this.state.P_Zipcode == '' ||
+      this.state.AvailStartDateTime == '' ||
+      this.state.AvailEndDateTime == ''
+    ) {
+      alert('Incomeplete Data');
+      return;
+    } else if (isNaN(this.state.P_Zipcode)) {
+      alert('Invalid Zip!!');
+    }
+    console.log('request body', {
+      P_Zipcode: parseInt(this.state.P_Zipcode),
+      P_City: this.state.P_City,
+      AvailStartDateTime: this.state.AvailStartDateTime,
+      AvailEndDateTime: this.state.AvailEndDateTime,
+    });
+    try {
+      fetch(
+        'http://parkwayapi-env-2.eba-xgm5ffvk.us-east-2.elasticbeanstalk.com/search',
+        {
+          //fetch('http://10.0.0.153:5000/login', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            P_Zipcode: this.state.P_Zipcode,
+            P_City: this.state.P_City,
+            AvailStartDateTime: this.state.AvailStartDateTime,
+            AvailEndDateTime: this.state.AvailEndDateTime,
+          }),
+        },
+      )
+        .then(response => {
+          console.log('Response here: ', response);
+          const statusCode = response.status;
+          const promiseofdata = response.json();
+          return Promise.all([statusCode, promiseofdata]);
+          /* if (statusCode === 500) {
+          Toast.show('Something went wrong we are looking into it!');
+        } else if (statusCode === 200) {
+          Toast.show('Registered Successfully');
+          this.props.navigation.navigate('tabScreen');
+        } else if (statusCode === 400) {
+          Toast.show('Invalid user credentials');
+        } else {
+          Toast.show('Something went terribly wrong.....we are on it!');
+        } */
+        })
+        .then(res => {
+          console.log('lol data', res);
+          const responseCode = res[0];
+          const data = res[1];
+
+          if (responseCode == 200) {
+            this.props.navigation.navigate('booking', {data});
+          }
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   render() {
     return (
       <ImageBackground
         source={require('../assets/parkwayRegistration.jpg')}
         style={styles.backgroundImage}>
         <View style={styles.registrationDetails}>
-          <View style={styles.search_header}>
-            <View style={styles.search_input_box}>
-              <Icon name="ios-search" style={styles.search_icon} />
-              <TextInput
-                placeholder="Search by pincode, city or address"
-                style={styles.input}
-              />
-            </View>
-          </View>
+          <TextInput
+            placeholder="Search by pincode, city or address"
+            style={styles.input}
+            onChangeText={text => {
+              this.setState({P_Zipcode: text});
+            }}
+          />
 
-          {/* checkIn and checkout input boxes */}
-          {/*  <View style={styles.search_check_in_check_out_container}>
-              <View style={styles.search_check_in_check_out_sub_container}>
-                <TextInput placeholder="Check-In" style={styles.input} />
-                <DateTimePicker
-                  isVisible={this.state.isVisible}
-                  onConfirm={this.handlePicker}
-                  onCancel={this.hidePicker}
-                />
-              </View> */}
+          <TouchableOpacity
+            onPress={() => this.showPicker('checkin')}
+            style={styles.search_date_time_button}>
+            <Text>{this.state.AvailStartDateTime || 'Check-in'}</Text>
+          </TouchableOpacity>
 
-          <View>
-            {/* to show selected date and time in the field */}
+          <TouchableOpacity
+            onPress={() => this.showPicker('checkout')}
+            style={styles.search_date_time_button}>
+            <Text>{this.state.AvailEndDateTime || 'Check-out'}</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => this.showPicker('checkin')}
-              style={styles.search_date_time_button}>
-              <Text>{this.state.chosenCheckInDateTime || 'Check-in'}</Text>
-            </TouchableOpacity>
+          <DateTimePicker
+            isVisible={this.state.isVisible}
+            onConfirm={this.handlePicker}
+            onCancel={this.hidePicker}
+            mode={'datetime'}
+            is24Hour={true}
+          />
 
-            <TouchableOpacity
-              onPress={() => this.showPicker('checkout')}
-              style={styles.search_date_time_button}>
-              <Text>{this.state.chosenCheckOutDateTime || 'Check-out'}</Text>
-            </TouchableOpacity>
-
-            <DateTimePicker
-              isVisible={this.state.isVisible}
-              onConfirm={this.handlePicker}
-              onCancel={this.hidePicker}
-              mode={'datetime'}
-              is24Hour={true}
-            />
-          </View>
-
-          <Button
+          <CustomButton
             title="Search Parking"
-            onPress={() => this.props.navigation.navigate('booking')}
-            //onPress={() => this.props.navigation.navigate('tabScreen')}
+            functionOnClick={() => {
+              this.postData();
+
+              //this.props.navigation.navigate('tabScreen');
+            }}
           />
         </View>
       </ImageBackground>
